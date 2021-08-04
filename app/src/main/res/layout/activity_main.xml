@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
-
-  <TextView
-      android:layout_width="wrap_content"
-      android:text="you are logged in successfully"
-      android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/user_id"
-        android:layout_width="wrap_content"
-        android:text="123"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/user_email"
-        android:layout_width="wrap_content"
-        android:text="abc@gmail.com"
-        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/logOut"
         android:layout_width="wrap_content"
-        android:text="Logout"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:text="@string/logout"
+        android:textAllCaps="false" />
+
+    <EditText
+        android:id="@+id/new_note"
+        android:hint="@string/create_new_record"
+        android:paddingStart="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/add" />
+
+    <TextView
+        android:id="@+id/note_list_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text=""
+        android:textColor="@color/purple_700"
+        android:textSize="20sp" />
+
 </LinearLayout>

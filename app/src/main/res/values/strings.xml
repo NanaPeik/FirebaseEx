@@ -8,5 +8,8 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="log_in">Log In</string>
     <string name="register_now">Register now</string>
+    <string name="add">add</string>
+    <string name="logout">logout</string>
+    <string name="create_new_record">create new record</string>
 
 </resources>

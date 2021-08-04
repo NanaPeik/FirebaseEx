@@ -20,6 +20,10 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.goToLogin.setOnClickListener {
+            onBackPressed()
+        }
+
         binding.registerButton.setOnClickListener {
             when {
                 TextUtils.isEmpty(binding.registerEmail.text.toString().trim { it <= ' ' }) -> {
@@ -48,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
                                 intent.flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 intent.putExtra("user_id", firebaseUser?.uid)
-                                intent.putExtra("email_id", email)
+//                                intent.putExtra("email_id", email)
                                 startActivity(intent)
                                 finish()
                             } else {
