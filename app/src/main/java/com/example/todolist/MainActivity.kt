@@ -4,14 +4,16 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var todoListAdapter: TodoListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +29,20 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
         binding.add.setOnClickListener {
-            if (userId != null) {
-                saveFireStore(binding.newNote.text.toString(), userId)
+            if (binding.newNote.text.isNotEmpty()) {
+                if (userId != null) {
+                    saveFireStore(binding.newNote.text.toString(), userId)
+                }
+            } else {
+                Toast.makeText(this, "fill record..", Toast.LENGTH_LONG).show()
             }
+
         }
+        binding.records.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
         if (userId != null) {
             readFireStoreData(userId)
+            binding.records.adapter = todoListAdapter
         }
     }
 
@@ -57,20 +67,42 @@ class MainActivity : AppCompatActivity() {
     private fun readFireStoreData(userId: String) {
         val db = FirebaseFirestore.getInstance()
 
+        val records = arrayListOf<RecordDocument>()
+
         db.collection("todo")
             .get()
             .addOnCompleteListener {
-                val result: StringBuffer = StringBuffer()
 
                 if (it.isSuccessful) {
                     for (document in it.result!!) {
                         if (document.data.getValue("userId") == userId) {
-                            result.append(document.data.getValue("text")).append("\n\n")
+                            val record = RecordDocument(
+                                document.id, document.data.getValue("text").toString(),
+                                document.data.getValue("userId").toString()
+                            )
+                            records.add(record)
                         }
-//                                                    .append(document.data.getValue("userId")).append("\n\n")
                     }
-                    binding.noteListItem.text = result
                 }
             }
+        todoListAdapter = TodoListAdapter(records, this)
+        todoListAdapter.notifyDataSetChanged()
+    }
+
+    override fun itemClicked(record: RecordDocument) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("todo")
+            .document(record.documentId)
+            .delete()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "record deleted", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "failed to delete record", Toast.LENGTH_LONG).show()
+            }
+        todoListAdapter.removeRecord(record)
     }
 }
