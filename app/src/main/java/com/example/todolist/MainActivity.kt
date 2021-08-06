@@ -14,11 +14,15 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var todoListAdapter: TodoListAdapter
+    private lateinit var records:MutableList<RecordDocument>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        records = arrayListOf<RecordDocument>()
+        todoListAdapter = TodoListAdapter(records, this)
 
         val userId = intent.getStringExtra("user_id")
 
@@ -44,6 +48,7 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
             readFireStoreData(userId)
             binding.records.adapter = todoListAdapter
         }
+
     }
 
     private fun saveFireStore(noteText: String, userId: String) {
@@ -66,8 +71,8 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
 
     private fun readFireStoreData(userId: String) {
         val db = FirebaseFirestore.getInstance()
+        records.clear()
 
-        val records = arrayListOf<RecordDocument>()
 
         db.collection("todo")
             .get()
@@ -83,10 +88,10 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
                             records.add(record)
                         }
                     }
+                    todoListAdapter.notifyDataSetChanged()
                 }
             }
-        todoListAdapter = TodoListAdapter(records, this)
-        todoListAdapter.notifyDataSetChanged()
+
     }
 
     override fun itemClicked(record: RecordDocument) {
@@ -98,11 +103,11 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "record deleted", Toast.LENGTH_LONG).show()
+                    todoListAdapter.removeRecord(record)
                 }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "failed to delete record", Toast.LENGTH_LONG).show()
             }
-        todoListAdapter.removeRecord(record)
     }
 }

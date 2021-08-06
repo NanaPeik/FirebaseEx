@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.databinding.RecordItemBinding
 
 class TodoListAdapter(
-    private var records: ArrayList<RecordDocument>,
+    private var records: MutableList<RecordDocument>,
     private val listener: RecordClickListener
 ) :
     RecyclerView.Adapter<TodoListAdapter.ListSelectionViewHolder>() {
