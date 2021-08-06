@@ -3,6 +3,7 @@ package com.example.todolist
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,15 +15,14 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var todoListAdapter: TodoListAdapter
-    private lateinit var records:MutableList<RecordDocument>
+    private lateinit var records: MutableList<RecordDocument>
 
-    //Todo: იგივე ტოასთებზე და ლოადერებზე
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        records = arrayListOf<RecordDocument>()
+        records = arrayListOf()
         todoListAdapter = TodoListAdapter(records, this)
 
         val userId = intent.getStringExtra("user_id")
@@ -34,14 +34,11 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
             finish()
         }
         binding.add.setOnClickListener {
-            if (binding.newNote.text.isNotEmpty()) {
-                if (userId != null) {
-                    saveFireStore(binding.newNote.text.toString(), userId)
-                }
+            if (binding.newNote.text.isNotEmpty() && userId != null) {
+                saveFireStore(binding.newNote.text.toString(), userId)
             } else {
-                Toast.makeText(this, "fill record..", Toast.LENGTH_LONG).show()
+                toast("fill record..")
             }
-
         }
         binding.records.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
@@ -49,7 +46,6 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
             readFireStoreData(userId)
             binding.records.adapter = todoListAdapter
         }
-
     }
 
     private fun saveFireStore(noteText: String, userId: String) {
@@ -61,18 +57,20 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
         db.collection("todo")
             .add(note)
             .addOnSuccessListener {
-                Toast.makeText(this, "record added successfully", Toast.LENGTH_LONG).show()
+                toast("record added successfully")
             }
             .addOnFailureListener {
-                Toast.makeText(this, "record failed to add", Toast.LENGTH_LONG).show()
+                toast("record failed to add")
 
             }
         readFireStoreData(userId)
     }
 
+
     private fun readFireStoreData(userId: String) {
         val db = FirebaseFirestore.getInstance()
         records.clear()
+        binding.recordsLoader.visibility = View.VISIBLE
 
 
         db.collection("todo")
@@ -90,25 +88,33 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
                         }
                     }
                     todoListAdapter.notifyDataSetChanged()
+                    binding.recordsLoader.visibility = View.GONE
                 }
             }
-
     }
 
     override fun itemClicked(record: RecordDocument) {
         val db = FirebaseFirestore.getInstance()
+
+        binding.recordsLoader.visibility = View.VISIBLE
 
         db.collection("todo")
             .document(record.documentId)
             .delete()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "record deleted", Toast.LENGTH_LONG).show()
+                    toast("record deleted")
                     todoListAdapter.removeRecord(record)
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "failed to delete record", Toast.LENGTH_LONG).show()
+                toast("failed to delete record")
             }
+        binding.recordsLoader.visibility = View.GONE
+
+    }
+
+    private fun toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

@@ -11,5 +11,6 @@
     <string name="add">add</string>
     <string name="logout">logout</string>
     <string name="create_new_record">create new record</string>
+    <string name="ara_not_registered">Ara not registered?</string>
 
 </resources>
