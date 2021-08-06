@@ -24,6 +24,7 @@ class RegisterActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        //Todo: იგივე რაც ავტორიზაციის გვერდზე
         binding.registerButton.setOnClickListener {
             when {
                 TextUtils.isEmpty(binding.registerEmail.text.toString().trim { it <= ' ' }) -> {

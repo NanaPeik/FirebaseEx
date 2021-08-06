@@ -22,11 +22,14 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
+        //Todo: onCreate დან გაიტანე ეს ლოგიკა ფუნქციებად, ვიუმოდელში მთლად უკეთესი იქნებოდა
         binding.registerButton.setOnClickListener {
             when {
+                //Todo: it <= ' ' } ამას რატომ აკეთებ ვერ მივხვდი , აქ რეგექსით უნდა შეამოწმო მეილი სწორი ფორმატისაა თუ არა
                 TextUtils.isEmpty(binding.loginEmail.text.toString().trim { it <= ' ' }) -> {
                     Toast.makeText(this, "Please enter email.", Toast.LENGTH_LONG).show()
                 }
+                //Todo: პაროლსაც რაიმე შეზღუდვები დაუდე
                 TextUtils.isEmpty(binding.loginPass.text.toString().trim { it <= ' ' }) -> {
                     Toast.makeText(this, "Please enter password.", Toast.LENGTH_LONG).show()
                 }
@@ -34,10 +37,11 @@ class LoginActivity : AppCompatActivity() {
                     val email: String = binding.loginEmail.text.toString().trim { it <= ' ' }
                     val password: String = binding.loginPass.text.toString().trim { it <= ' ' }
 
+                    //Todo:ლოადერები საჭიროა ყველგან
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-
+                                //Todo: error ის ჩვენება ცალკე ფუნქციად რომ გქონდეს და ყველგან გამოიყენებდი, ექსთენშენადაც შეიძლება
                                 Toast.makeText(
                                     this,
                                     "You are logged in successfully.",

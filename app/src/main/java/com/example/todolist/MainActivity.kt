@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
     private lateinit var todoListAdapter: TodoListAdapter
     private lateinit var records:MutableList<RecordDocument>
 
+    //Todo: იგივე ტოასთებზე და ლოადერებზე
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
