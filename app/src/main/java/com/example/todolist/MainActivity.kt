@@ -105,12 +105,12 @@ class MainActivity : AppCompatActivity(), TodoListAdapter.RecordClickListener {
                 if (it.isSuccessful) {
                     toast("record deleted")
                     todoListAdapter.removeRecord(record)
+                    binding.recordsLoader.visibility = View.GONE
                 }
             }
             .addOnFailureListener {
                 toast("failed to delete record")
             }
-        binding.recordsLoader.visibility = View.GONE
 
     }
 
